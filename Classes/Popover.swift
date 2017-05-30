@@ -21,6 +21,7 @@ public enum PopoverOption {
   case color(UIColor)
   case dismissOnBlackOverlayTap(Bool)
   case showBlackOverlay(Bool)
+  case removeOnDismiss(Bool)
 }
 
 @objc public enum PopoverType: Int {
@@ -44,6 +45,7 @@ open class Popover: UIView {
   open var showBlackOverlay: Bool = true
   open var highlightFromView: Bool = false
   open var highlightCornerRadius: CGFloat = 0
+  open var removeOnDismiss: Bool = true
 
   // custom closure
   open var willShowHandler: (() -> ())?
@@ -106,6 +108,8 @@ open class Popover: UIView {
           self.dismissOnBlackOverlayTap = value
         case let .showBlackOverlay(value):
             self.showBlackOverlay = value
+        case let .removeOnDismiss(value):
+            self.removeOnDismiss = value
         }
       }
     }
@@ -297,7 +301,9 @@ open class Popover: UIView {
         }){ _ in
           self.contentView.removeFromSuperview()
           self.blackOverlay.removeFromSuperview()
-          self.removeFromSuperview()
+          if self.removeOnDismiss == true {
+            self.removeFromSuperview()
+          }
           self.transform = CGAffineTransform.identity
           self.didDismissHandler?()
       }
